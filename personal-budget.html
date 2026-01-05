@@ -690,8 +690,8 @@
         return out;
       }
 
-      function renderRows(activeRows) {
-        const rows = applyFilters(activeRows);
+      function renderRows(allList) {
+        const rows = applyFilters(allList);
         tbody.innerHTML = "";
 
         rows.forEach(r => {
@@ -840,7 +840,7 @@
         const activeRows = getActiveRows();
         cachedActiveRows = activeRows;
         updateSummary(activeRows);
-        renderRows(activeRows);
+        renderRows(allRows);
         renderCategories(activeRows);
         redraw(activeRows);
       }
