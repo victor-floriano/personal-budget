@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Budget Comparison — 2025 vs 2026</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111824;
+      --text: #e8eef7;
+      --muted: #a9b6c8;
+      --border: rgba(232, 238, 247, 0.10);
+      --good: #4ade80;
+      --bad: #fb7185;
+      --accent: #60a5fa;
+      --panel-gradient: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      --panel-gradient-soft: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      --body-bg:
+        radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,0.12), transparent 55%),
+        radial-gradient(900px 500px at 80% 30%, rgba(74,222,128,0.08), transparent 60%),
+        var(--bg);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --text: #1b2430;
+      --muted: #5a6b82;
+      --border: rgba(31, 51, 76, 0.12);
+      --good: #16a34a;
+      --bad: #dc2626;
+      --accent: #2563eb;
+      --panel-gradient: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));
+      --panel-gradient-soft: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+      --body-bg:
+        radial-gradient(1000px 600px at 15% 5%, rgba(37,99,235,0.10), transparent 60%),
+        radial-gradient(900px 550px at 85% 20%, rgba(22,163,74,0.08), transparent 65%),
+        var(--bg);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    html { background: var(--bg); }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--body-bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(20px, 2.2vw, 28px);
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+
+    .control input[type="search"] {
+      width: min(360px, 65vw);
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 13px;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .pill input { accent-color: var(--accent); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .card {
+      grid-column: span 4;
+      background: var(--panel-gradient);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .value {
+      margin-top: 8px;
+      font-size: 24px;
+      font-weight: 750;
+      letter-spacing: 0.2px;
+    }
+
+    .delta {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .badge.good { color: var(--good); border-color: rgba(74,222,128,0.25); }
+    .badge.bad { color: var(--bad); border-color: rgba(251,113,133,0.25); }
+
+    .panel {
+      grid-column: span 12;
+      background: var(--panel-gradient-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .panelHead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panelHead .title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .panelHead .title strong { font-size: 14px; }
+    .panelHead .title span { color: var(--muted); font-size: 12px; }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+    .dot.y2025 { background: rgba(96,165,250,0.9); }
+    .dot.y2026 { background: rgba(74,222,128,0.9); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      background: rgba(17,24,36,0.95);
+      backdrop-filter: blur(6px);
+      z-index: 2;
+    }
+
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tbody tr { cursor: pointer; }
+    tbody tr.excluded td {
+      color: rgba(169,182,200,0.75);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+    tbody tr.excluded td.num.chg { text-decoration: none; }
+
+    .chg { font-weight: 650; }
+    .chg.good { color: var(--good); }
+    .chg.bad { color: var(--bad); }
+    .chg.muted { color: var(--muted); font-weight: 550; }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .twoCol {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .mini {
+      background: var(--panel-gradient-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .mini h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+    }
+
+    .hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 900px) {
+      .card { grid-column: span 6; }
+      .twoCol { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .card { grid-column: span 12; }
+      th, td { padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Budget Comparison — 2025 vs 2026</h1>
+        <p class="subtitle">Interactive comparison of your monthly recurring expenses. Search, filter, and inspect the changes.</p>
+      </div>
+      <div class="controls">
+        <div class="control" title="Filter by item name">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="rgba(232,238,247,0.65)" stroke-width="2"/>
+            <path d="M21 21l-4.3-4.3" stroke="rgba(232,238,247,0.65)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="search" type="search" placeholder="Search items (e.g., Zepbound, Prime, Nalla)" />
+        </div>
+        <label class="pill" title="Show only items that changed between years">
+          <input id="onlyChanged" type="checkbox" />
+          Only changed
+        </label>
+        <label class="pill" title="Show only items added in 2026">
+          <input id="onlyAdded" type="checkbox" />
+          Only added
+        </label>
+        <label class="pill" title="Show only items removed in 2026">
+          <input id="onlyRemoved" type="checkbox" />
+          Only removed
+        </label>
+        <label class="pill" title="Toggle light/dark theme">
+          <input id="themeToggle" type="checkbox" />
+          Light mode
+        </label>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>2025 total / month</h2>
+        <div class="value" id="total2025">—</div>
+        <div class="delta"><span class="badge" id="count2025">—</span><span>items</span></div>
+        <div class="delta"><span class="badge" id="annual2025">—</span><span>annual</span></div>
+      </div>
+
+      <div class="card">
+        <h2>2026 total / month</h2>
+        <div class="value" id="total2026">—</div>
+        <div class="delta"><span class="badge" id="count2026">—</span><span>items</span></div>
+        <div class="delta"><span class="badge" id="annual2026">—</span><span>annual</span></div>
+      </div>
+
+      <div class="card">
+        <h2>difference</h2>
+        <div class="value" id="deltaTotal">—</div>
+        <div class="delta">
+          <span class="badge" id="deltaBadge">—</span>
+          <span id="deltaPct">—</span>
+        </div>
+        <div class="delta">
+          <span class="badge" id="annualDelta">—</span>
+          <span>annual</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead">
+          <div class="title">
+            <strong>Itemized comparison</strong>
+            <span id="rowsMeta">—</span>
+          </div>
+          <div class="legend">
+            <span><span class="dot y2025"></span> 2025</span>
+            <span><span class="dot y2026"></span> 2026</span>
+          </div>
+        </div>
+        <div style="max-height: 420px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 42%;">Item</th>
+                <th class="num" style="width: 19%;">2025 / mo</th>
+                <th class="num" style="width: 19%;">2026 / mo</th>
+                <th class="num" style="width: 20%;">Change</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="foot">
+          <div>
+            <span id="footNote">—</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="badge" id="addedCount">—</span>
+            <span class="badge" id="removedCount">—</span>
+            <span class="badge" id="changedCount">—</span>
+            <span class="badge" id="excludedCount">—</span>
+            <span class="badge" id="testBadge">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead">
+          <div class="title">
+            <strong>Category breakdown</strong>
+            <span id="catMeta">—</span>
+          </div>
+          <div class="legend">
+            <span><span class="dot y2025"></span> 2025</span>
+            <span><span class="dot y2026"></span> 2026</span>
+          </div>
+        </div>
+        <div style="max-height: 320px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 42%;">Category</th>
+                <th class="num" style="width: 19%;">2025 / mo</th>
+                <th class="num" style="width: 19%;">2026 / mo</th>
+                <th class="num" style="width: 20%;">Change</th>
+              </tr>
+            </thead>
+            <tbody id="catBody"></tbody>
+          </table>
+        </div>
+        <div class="foot">
+          <div>
+            <span class="badge">Pet includes Nalla (your dog).</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="badge" id="catCount">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="twoCol" style="grid-column: span 12;">
+        <div class="mini">
+          <h3>Totals (simple bar chart)</h3>
+          <canvas id="totalsChart" width="900" height="260" aria-label="Totals chart"></canvas>
+          <div class="hint">Two bars: 2025 total vs 2026 total. (No libraries. Just wholesome vanilla pixels.)</div>
+        </div>
+        <div class="mini">
+          <h3>Top item changes</h3>
+          <canvas id="changesChart" width="900" height="260" aria-label="Top changes chart"></canvas>
+          <div class="hint">Shows the biggest increases/decreases by item (based on 2026−2025). Merged/renamed items are treated as separate lines if their names differ.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ----------------------------
+    // Source data (monthly amounts)
+    // ----------------------------
+    const budget2025 = {
+      "Zepbound dose": 750.00,
+      "Cook Unity": 714.45,
+      "General Groceries": 216.50,
+      "Nalla’s Insurance": 93.24,
+      "Phone Bill": 90.00,
+      "Strava": 6.67,
+      "Doctor Prescribing Zepbound": 75.00,
+      "Hoka Sneakers": 50.00,
+      "Vital Protein Collagen Peptides": 44.00,
+      "EltaMD UV Face Sunscreen": 33.08,
+      "Nalla’s Pads": 25.00,
+      "ChatGPT Plus": 20.00,
+      "Nalla’s Food": 19.00,
+      "YouTube Premium": 18.99,
+      "Max": 16.99,
+      "Nvidia GeForce Now": 16.67,
+      "Spotify Premium": 11.99,
+      "Crunchyroll Premium": 11.99,
+      "Amazon Prime": 11.58,
+      "iCloud+": 9.99,
+      "Apple TV": 9.99,
+      "PlayStation Plus Essentials": 6.67,
+      "Prime Video (No Ads)": 2.99,
+    };
+
+    const budget2026 = {
+      "Zepbound dose": 415.00,
+      "Cook Unity": 725.00,
+      "General Groceries": 220.00,
+      "Nalla’s Insurance": 80.00,
+      "Phone Bill": 95.00,
+      "Doctor Prescribing Zepbound": 75.00,
+      "Sneaker Budget": 55.00,
+      "Vital Protein Collagen Peptides": 45.00,
+      "EltaMD UV Face Sunscreen": 36.00,
+      "Nalla’s Pads": 18.00,
+      "ChatGPT Plus": 20.00,
+      "Nalla’s Food": 19.00,
+      "YouTube Premium": 14.00,
+      "Nvidia GeForce Now": 17.00,
+      "Spotify Premium": 11.99,
+      "Crunchyroll Premium": 11.99,
+      "Amazon Prime + Prime Video": 14.60,
+      "iCloud+": 9.99,
+      "Apple TV": 12.99,
+      "PlayStation Plus Essentials": 9.99,
+      "Google Cloud": 10.00,
+      "Propecia": 110.00,
+      "Oral Minoxidil": 8.00,
+    };
+
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+    const fmt = (n) => {
+      if (n === null || n === undefined) return "—";
+      return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+    };
+
+    const sum = (obj) => Object.values(obj).reduce((a, b) => a + b, 0);
+
+    function categoryFor(item) {
+      const name = item.toLowerCase();
+      const subs = [
+        "youtube", "spotify", "crunchyroll", "amazon prime", "prime video", "max",
+        "nvidia", "chatgpt", "icloud", "apple tv", "playstation", "google cloud",
+      ];
+      if (name.includes("nalla")) return "Pet";
+      if (name.includes("zepbound") || name.includes("doctor") || name.includes("propecia") ||
+          name.includes("minoxidil") || name.includes("protein")) return "Health";
+      if (name.includes("cook unity") || name.includes("grocer")) return "Food";
+      if (name.includes("phone")) return "Utilities";
+      if (name.includes("sneaker") || name.includes("hoka")) return "Apparel";
+      if (name.includes("sunscreen")) return "Beauty";
+      if (name.includes("strava")) return "Fitness";
+      if (subs.some(s => name.includes(s))) return "Subscriptions";
+      return "Other";
+    }
+
+    function buildCategoryRows() {
+      const sumByCategory = (budget) => {
+        const out = {};
+        Object.entries(budget).forEach(([item, value]) => {
+          const cat = categoryFor(item);
+          out[cat] = (out[cat] || 0) + value;
+        });
+        return out;
+      };
+
+      const c25 = sumByCategory(budget2025);
+      const c26 = sumByCategory(budget2026);
+      const cats = new Set([...Object.keys(c25), ...Object.keys(c26)]);
+
+      const rows = [...cats].map(cat => {
+        const v25 = c25[cat] || 0;
+        const v26 = c26[cat] || 0;
+        return { cat, v25, v26, chg: v26 - v25 };
+      });
+
+      rows.sort((a, b) => {
+        if (b.v26 !== a.v26) return b.v26 - a.v26;
+        return a.cat.localeCompare(b.cat);
+      });
+      return rows;
+    }
+
+    function buildRows() {
+      const items = new Set([...Object.keys(budget2025), ...Object.keys(budget2026)]);
+      const rows = [...items].map((item) => {
+        const v25 = (item in budget2025) ? budget2025[item] : null;
+        const v26 = (item in budget2026) ? budget2026[item] : null;
+        const chg = (v25 === null || v26 === null) ? null : (v26 - v25);
+        const status = (v25 === null) ? "added" : (v26 === null) ? "removed" : (v26 !== v25) ? "changed" : "same";
+        return { item, v25, v26, chg, status };
+      });
+
+      const pri = { changed: 0, added: 1, removed: 2, same: 3 };
+      rows.sort((a, b) => {
+        if (pri[a.status] !== pri[b.status]) return pri[a.status] - pri[b.status];
+        const da = (a.chg === null) ? 0 : Math.abs(a.chg);
+        const db = (b.chg === null) ? 0 : Math.abs(b.chg);
+        if (db !== da) return db - da;
+        return a.item.localeCompare(b.item);
+      });
+
+      return rows;
+    }
+
+    // ----------------------------
+    // Tiny self-tests (no framework)
+    // ----------------------------
+    function runTests(total25, total26) {
+      const tests = [];
+      const approxEq = (a, b, eps = 0.005) => Math.abs(a - b) <= eps;
+
+      // Test 1: totals are numbers
+      tests.push({ name: "Totals are finite numbers", pass: Number.isFinite(total25) && Number.isFinite(total26) });
+
+      // Test 2: expected 2026 total (from your final 2026 list)
+      tests.push({ name: "2026 totals match expected", pass: approxEq(total26, 2033.55) });
+
+      // Test 3: expected 2025 total from the 2025 line items listed
+      tests.push({ name: "2025 totals match expected", pass: approxEq(total25, 2254.79) });
+
+      const passed = tests.filter(t => t.pass).length;
+      const failed = tests.length - passed;
+
+      // Log details for debugging
+      // eslint-disable-next-line no-console
+      console.table(tests);
+
+      return { passed, failed, total: tests.length };
+    }
+
+    // ----------------------------
+    // Main render
+    // ----------------------------
+    (function init() {
+      const baseTotal25 = sum(budget2025);
+      const baseTotal26 = sum(budget2026);
+      const allRows = buildRows();
+      const excludedItems = new Set();
+
+      function getActiveRows() {
+        return allRows.filter(r => !excludedItems.has(r.item));
+      }
+
+      let cachedActiveRows = getActiveRows();
+
+      function totalsFromRows(rows) {
+        const total25 = rows.reduce((acc, r) => acc + (r.v25 || 0), 0);
+        const total26 = rows.reduce((acc, r) => acc + (r.v26 || 0), 0);
+        return { total25, total26 };
+      }
+
+      function updateSummary(rows) {
+        const totals = totalsFromRows(rows);
+      const total25 = totals.total25;
+      const total26 = totals.total26;
+
+        document.getElementById("total2025").textContent = fmt(total25);
+        document.getElementById("total2026").textContent = fmt(total26);
+        document.getElementById("count2025").textContent = rows.filter(r => r.v25 !== null).length;
+        document.getElementById("count2026").textContent = rows.filter(r => r.v26 !== null).length;
+        document.getElementById("annual2025").textContent = fmt(total25 * 12);
+        document.getElementById("annual2026").textContent = fmt(total26 * 12);
+
+        const d = total26 - total25;
+        const dAbs = Math.abs(d);
+        const dPct = (total25 > 0) ? (d / total25) * 100 : 0;
+
+        document.getElementById("deltaTotal").textContent = fmt(d);
+        const badge = document.getElementById("deltaBadge");
+        badge.textContent = (d >= 0 ? "+" : "−") + fmt(dAbs);
+        badge.classList.toggle("bad", d > 0);
+        badge.classList.toggle("good", d < 0);
+
+      const pctTxt = document.getElementById("deltaPct");
+      pctTxt.textContent = `${dPct >= 0 ? "+" : ""}${dPct.toFixed(2)}% vs 2025`;
+      document.getElementById("annualDelta").textContent = fmt(d * 12);
+    }
+
+      // Table
+      const tbody = document.getElementById("tbody");
+      const search = document.getElementById("search");
+      const onlyChanged = document.getElementById("onlyChanged");
+      const onlyAdded = document.getElementById("onlyAdded");
+      const onlyRemoved = document.getElementById("onlyRemoved");
+      const themeToggle = document.getElementById("themeToggle");
+
+      function applyFilters(rows) {
+        const q = search.value.trim().toLowerCase();
+        let out = rows;
+
+        if (q) out = out.filter(r => r.item.toLowerCase().includes(q));
+
+        const c = onlyChanged.checked;
+        const a = onlyAdded.checked;
+        const rm = onlyRemoved.checked;
+        if (c || a || rm) {
+          out = out.filter(r => (c && r.status === "changed") || (a && r.status === "added") || (rm && r.status === "removed"));
+        }
+        return out;
+      }
+
+      function renderRows(activeRows) {
+        const rows = applyFilters(activeRows);
+        tbody.innerHTML = "";
+
+        rows.forEach(r => {
+          const tr = document.createElement("tr");
+          tr.classList.toggle("excluded", excludedItems.has(r.item));
+
+          const tdItem = document.createElement("td");
+          tdItem.textContent = r.item;
+
+          const td25 = document.createElement("td");
+          td25.className = "num";
+          td25.textContent = fmt(r.v25);
+
+          const td26 = document.createElement("td");
+          td26.className = "num";
+          td26.textContent = fmt(r.v26);
+
+          const tdChg = document.createElement("td");
+          tdChg.className = "num chg";
+
+          if (r.status === "added") {
+            tdChg.textContent = "+" + fmt(r.v26);
+            tdChg.classList.add("bad");
+          } else if (r.status === "removed") {
+            tdChg.textContent = "−" + fmt(r.v25);
+            tdChg.classList.add("good");
+          } else if (r.status === "same") {
+            tdChg.textContent = "—";
+            tdChg.classList.add("muted");
+          } else {
+            const sign = r.chg >= 0 ? "+" : "−";
+            tdChg.textContent = sign + fmt(Math.abs(r.chg));
+            tdChg.classList.add(r.chg > 0 ? "bad" : (r.chg < 0 ? "good" : "muted"));
+          }
+
+          tr.appendChild(tdItem);
+          tr.appendChild(td25);
+          tr.appendChild(td26);
+          tr.appendChild(tdChg);
+          tbody.appendChild(tr);
+
+          tr.addEventListener("click", () => {
+            if (excludedItems.has(r.item)) {
+              excludedItems.delete(r.item);
+            } else {
+              excludedItems.add(r.item);
+            }
+            renderAll();
+          });
+        });
+
+        // Meta + counters
+        const added = allRows.filter(r => r.status === "added").length;
+        const removed = allRows.filter(r => r.status === "removed").length;
+        const changed = allRows.filter(r => r.status === "changed").length;
+        const excluded = excludedItems.size;
+
+        document.getElementById("rowsMeta").textContent = `${rows.length} shown — ${allRows.length} total items (union)`;
+        document.getElementById("addedCount").textContent = `${added} added`;
+        document.getElementById("removedCount").textContent = `${removed} removed`;
+        document.getElementById("changedCount").textContent = `${changed} changed`;
+        document.getElementById("excludedCount").textContent = `${excluded} excluded`;
+
+        const foot = document.getElementById("footNote");
+        foot.textContent = "Click a row to exclude it from totals; click again to restore.";
+      }
+
+      function renderCategories(activeRows) {
+        const catBody = document.getElementById("catBody");
+        catBody.innerHTML = "";
+
+        const categoryTotals = {};
+        activeRows.forEach(r => {
+          if (r.v25 !== null) {
+            const cat = categoryFor(r.item);
+            categoryTotals[cat] = categoryTotals[cat] || { cat, v25: 0, v26: 0 };
+            categoryTotals[cat].v25 += r.v25;
+          }
+          if (r.v26 !== null) {
+            const cat = categoryFor(r.item);
+            categoryTotals[cat] = categoryTotals[cat] || { cat, v25: 0, v26: 0 };
+            categoryTotals[cat].v26 += r.v26;
+          }
+        });
+
+        const rows = Object.values(categoryTotals)
+          .map(r => ({ ...r, chg: r.v26 - r.v25 }))
+          .sort((a, b) => (b.v26 - a.v26) || a.cat.localeCompare(b.cat));
+
+        rows.forEach(r => {
+          const tr = document.createElement("tr");
+
+          const tdCat = document.createElement("td");
+          tdCat.textContent = r.cat;
+
+          const td25 = document.createElement("td");
+          td25.className = "num";
+          td25.textContent = fmt(r.v25);
+
+          const td26 = document.createElement("td");
+          td26.className = "num";
+          td26.textContent = fmt(r.v26);
+
+          const tdChg = document.createElement("td");
+          tdChg.className = "num chg";
+          if (r.chg === 0) {
+            tdChg.textContent = "—";
+            tdChg.classList.add("muted");
+          } else {
+            const sign = r.chg > 0 ? "+" : "−";
+            tdChg.textContent = sign + fmt(Math.abs(r.chg));
+            tdChg.classList.add(r.chg > 0 ? "bad" : "good");
+          }
+
+          tr.appendChild(tdCat);
+          tr.appendChild(td25);
+          tr.appendChild(td26);
+          tr.appendChild(tdChg);
+          catBody.appendChild(tr);
+        });
+
+        document.getElementById("catMeta").textContent = `${rows.length} categories (monthly totals)`;
+        document.getElementById("catCount").textContent = `${rows.length} categories`;
+      }
+
+      [search, onlyChanged, onlyAdded, onlyRemoved].forEach(el => {
+        el.addEventListener("input", renderAll);
+        el.addEventListener("change", renderAll);
+      });
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        themeToggle.checked = theme === "light";
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      applyTheme(savedTheme);
+      themeToggle.addEventListener("change", () => {
+        const next = themeToggle.checked ? "light" : "dark";
+        localStorage.setItem("theme", next);
+        applyTheme(next);
+        redraw();
+      });
+
+      function renderAll() {
+        const activeRows = getActiveRows();
+        cachedActiveRows = activeRows;
+        updateSummary(activeRows);
+        renderRows(activeRows);
+        renderCategories(activeRows);
+        redraw(activeRows);
+      }
+
+      renderAll();
+
+      // Charts
+      function drawTotalsChart(totals) {
+        const c = document.getElementById("totalsChart");
+        const ctx = c.getContext("2d");
+
+        const dpr = window.devicePixelRatio || 1;
+        const cssW = c.clientWidth;
+        const cssH = c.clientHeight;
+        c.width = Math.round(cssW * dpr);
+        c.height = Math.round(cssH * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        ctx.clearRect(0, 0, cssW, cssH);
+
+        const pad = 26;
+        const w = cssW - pad * 2;
+        const h = cssH - pad * 2;
+        const maxV = Math.max(totals.total25, totals.total26);
+
+        const barW = Math.min(220, w / 3);
+        const gap = Math.min(60, w / 6);
+        const x1 = pad + (w - (barW * 2 + gap)) / 2;
+        const x2 = x1 + barW + gap;
+
+        const yBase = pad + h;
+        const scale = (v) => (maxV === 0 ? 0 : (v / maxV) * (h - 36));
+
+        // grid
+        ctx.globalAlpha = 0.28;
+        ctx.strokeStyle = "rgba(232,238,247,0.35)";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+          const y = pad + (h * i) / 4;
+          ctx.beginPath();
+          ctx.moveTo(pad, y);
+          ctx.lineTo(pad + w, y);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        // 2025
+        const b1 = scale(totals.total25);
+        ctx.fillStyle = "rgba(96,165,250,0.85)";
+        ctx.fillRect(x1, yBase - b1, barW, b1);
+
+        // 2026
+        const b2 = scale(totals.total26);
+        ctx.fillStyle = "rgba(74,222,128,0.85)";
+        ctx.fillRect(x2, yBase - b2, barW, b2);
+
+        // labels
+        ctx.fillStyle = "rgba(232,238,247,0.92)";
+        ctx.font = "600 13px ui-sans-serif, system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText("2025", x1 + barW / 2, yBase + 18);
+        ctx.fillText("2026", x2 + barW / 2, yBase + 18);
+
+        ctx.font = "700 14px ui-sans-serif, system-ui";
+        ctx.fillText(fmt(totals.total25), x1 + barW / 2, yBase - b1 - 10);
+        ctx.fillText(fmt(totals.total26), x2 + barW / 2, yBase - b2 - 10);
+
+        ctx.textAlign = "left";
+        ctx.font = "500 12px ui-sans-serif, system-ui";
+        ctx.fillStyle = "rgba(169,182,200,0.95)";
+        ctx.fillText("Monthly totals", pad, pad - 6);
+      }
+
+      function drawChangesChart(activeRows) {
+        const c = document.getElementById("changesChart");
+        const ctx = c.getContext("2d");
+
+        const dpr = window.devicePixelRatio || 1;
+        const cssW = c.clientWidth;
+        const cssH = c.clientHeight;
+        c.width = Math.round(cssW * dpr);
+        c.height = Math.round(cssH * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        ctx.clearRect(0, 0, cssW, cssH);
+
+        const rows = activeRows
+          .map(r => {
+            let delta;
+            if (r.status === "added") delta = r.v26;
+            else if (r.status === "removed") delta = -r.v25;
+            else if (r.status === "same") delta = 0;
+            else delta = r.chg;
+            return { item: r.item, delta };
+          })
+          .filter(r => r.delta !== 0);
+
+        rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+        const top = rows.slice(0, 8);
+
+        const pad = 18;
+        const topPad = 32;
+        const left = 240;
+        const w = cssW - pad - left;
+        const h = cssH - topPad - pad;
+
+        const maxAbs = top.reduce((m, r) => Math.max(m, Math.abs(r.delta)), 1);
+        const yStep = h / Math.max(top.length, 1);
+
+        // zero line
+        const zeroX = left + (w / 2);
+        ctx.strokeStyle = "rgba(232,238,247,0.35)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(zeroX, topPad);
+        ctx.lineTo(zeroX, topPad + h);
+        ctx.stroke();
+
+        // title
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillStyle = "rgba(169,182,200,0.95)";
+        ctx.font = "500 12px ui-sans-serif, system-ui";
+        ctx.fillText("Largest item deltas (2026 − 2025)", pad, 16);
+
+        if (top.length === 0) {
+          ctx.fillStyle = "rgba(169,182,200,0.95)";
+          ctx.font = "500 13px ui-sans-serif, system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("No changes found.", cssW / 2, cssH / 2);
+          return;
+        }
+
+        // labels + bars
+        ctx.font = "600 12px ui-sans-serif, system-ui";
+        ctx.textBaseline = "middle";
+
+        top.forEach((r, i) => {
+          const y = topPad + yStep * (i + 0.5);
+
+          // item label
+          ctx.textAlign = "left";
+          const label = r.item.length > 24 ? r.item.slice(0, 23) + "…" : r.item;
+          ctx.fillStyle = "rgba(232,238,247,0.9)";
+          ctx.fillText(label, pad, y);
+
+          // bar
+          const bw = (Math.abs(r.delta) / maxAbs) * (w / 2 - 16);
+          const x = r.delta >= 0 ? zeroX : (zeroX - bw);
+          ctx.fillStyle = r.delta >= 0 ? "rgba(251,113,133,0.85)" : "rgba(74,222,128,0.85)";
+          ctx.fillRect(x, y - (yStep * 0.28), bw, yStep * 0.56);
+
+          // value label
+          ctx.textAlign = r.delta >= 0 ? "left" : "right";
+          ctx.fillStyle = "rgba(169,182,200,0.95)";
+          const v = (r.delta >= 0 ? "+" : "−") + fmt(Math.abs(r.delta));
+          ctx.fillText(v, r.delta >= 0 ? (zeroX + bw + 6) : (zeroX - bw - 6), y);
+        });
+      }
+
+      function redraw(activeRows = cachedActiveRows) {
+        const totals = totalsFromRows(activeRows);
+        drawTotalsChart(totals);
+        drawChangesChart(activeRows);
+      }
+
+      window.addEventListener("resize", redraw);
+      redraw();
+
+      // Tests badge
+      const results = runTests(baseTotal25, baseTotal26);
+      const tb = document.getElementById("testBadge");
+      if (results.failed === 0) {
+        tb.textContent = `Tests: ${results.passed}/${results.total} passed`;
+        tb.classList.add("good");
+      } else {
+        tb.textContent = `Tests: ${results.failed} failed`;
+        tb.classList.add("bad");
+      }
+    })();
+  </script>
+</body>
+</html>
