@@ -468,6 +468,7 @@
       "Zepbound dose": 750.00,
       "Cook Unity": 714.45,
       "General Groceries": 216.50,
+      "US Health Insurance": 535.00,
       "Nalla’s Insurance": 93.24,
       "Phone Bill": 90.00,
       "Strava": 6.67,
@@ -494,6 +495,7 @@
       "Zepbound dose": 415.00,
       "Cook Unity": 725.00,
       "General Groceries": 220.00,
+      "US Health Insurance": 535.00,
       "Nalla’s Insurance": 80.00,
       "Phone Bill": 95.00,
       "Doctor Prescribing Zepbound": 75.00,
@@ -604,10 +606,10 @@
       tests.push({ name: "Totals are finite numbers", pass: Number.isFinite(total25) && Number.isFinite(total26) });
 
       // Test 2: expected 2026 total (from your final 2026 list)
-      tests.push({ name: "2026 totals match expected", pass: approxEq(total26, 2033.55) });
+      tests.push({ name: "2026 totals match expected", pass: approxEq(total26, 2568.55) });
 
       // Test 3: expected 2025 total from the 2025 line items listed
-      tests.push({ name: "2025 totals match expected", pass: approxEq(total25, 2254.79) });
+      tests.push({ name: "2025 totals match expected", pass: approxEq(total25, 2789.79) });
 
       const passed = tests.filter(t => t.pass).length;
       const failed = tests.length - passed;
